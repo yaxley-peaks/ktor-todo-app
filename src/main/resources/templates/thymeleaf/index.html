@@ -15,11 +15,7 @@
 </form>
 <h3>Items</h3>
 <ol>
-    <li><input type="checkbox">Test1</li>
-    <li><input type="checkbox">Test2</li>
-    <li><input type="checkbox">Test3</li>
-    <li><input type="checkbox">Test4</li>
-    <li><input type="checkbox">Test5</li>
+  <li th:each="item: ${items}"><input type="checkbox"><span th:text="${item.title}"></span></li>
 </ol>
 </body>
 </html>

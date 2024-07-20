@@ -6,6 +6,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.thymeleaf.Thymeleaf
 import io.ktor.server.thymeleaf.ThymeleafContent
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
+import yaxley.`in`.repositories.TodoItemRepository
 
 fun Application.configureTemplating() {
     install(Thymeleaf) {
@@ -17,9 +18,7 @@ fun Application.configureTemplating() {
     }
     routing {
         get("/") {
-            call.respond(ThymeleafContent("index", mapOf("user" to ThymeleafUser(1, "user1"))))
+            call.respond(ThymeleafContent("index", mapOf("items" to TodoItemRepository.items.items)))
         }
     }
 }
-
-data class ThymeleafUser(val id: Int, val name: String)
