@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package yaxley.`in`.plugins
 
 import io.ktor.server.application.*
