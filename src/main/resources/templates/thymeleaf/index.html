@@ -1,11 +1,26 @@
 <!DOCTYPE html >
+<!--suppress HtmlFormInputWithoutLabel -->
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>TODO app</title>
 </head>
 <body>
-<span th:text="${user.name}"></span>
+<form>
+    <label>
+        Remember what?
+        <input type="text">
+    </label>
+    <button type="submit">Add item</button>
+</form>
+<h3>Items</h3>
+<ol>
+    <li><input type="checkbox">Test1</li>
+    <li><input type="checkbox">Test2</li>
+    <li><input type="checkbox">Test3</li>
+    <li><input type="checkbox">Test4</li>
+    <li><input type="checkbox">Test5</li>
+</ol>
 </body>
 </html>
 
