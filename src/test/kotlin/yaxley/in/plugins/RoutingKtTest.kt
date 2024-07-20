@@ -24,7 +24,7 @@ class RoutingKtTest {
         }
         client.post("/api/addItem") {
             contentType(ContentType.Application.Json)
-            setBody(TodoItem(99999,"Test", true))
+            setBody(TodoItem(99999, "Test", true))
         }.apply {
             val response = call.response
             assertEquals(HttpStatusCode.NoContent, response.status)
@@ -43,6 +43,24 @@ class RoutingKtTest {
         client.post("/api/addItem") {
             contentType(ContentType.Application.Json)
             setBody(mapOf("hello" to false))
+        }.apply {
+            val response = call.response
+            assertEquals(HttpStatusCode.BadRequest, response.status)
+        }
+    }
+
+    @Test
+    fun testPostApiEmptyAddItem() = testApplication {
+        application { module() }
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+
+        }
+        client.post("/api/addItem") {
+            contentType(ContentType.Application.Json)
+            setBody(TodoItem(99999, "", true))
         }.apply {
             val response = call.response
             assertEquals(HttpStatusCode.BadRequest, response.status)
