@@ -10,7 +10,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import yaxley.`in`.repositories.TodoItem
 import yaxley.`in`.repositories.TodoItemRepository
-import yaxley.`in`.repositories.addTodoItem
 
 fun Application.configureRouting() {
     routing {
@@ -22,7 +21,7 @@ fun Application.configureRouting() {
                         call.respond(HttpStatusCode.BadRequest)
                         return@post
                     }
-                    TodoItemRepository.items.addTodoItem(item)
+                    TodoItemRepository.items.addTodoItem(item.title, item.done)
                     call.respond(HttpStatusCode.NoContent)
                     return@post
                 } catch (ex: ContentTransformationException) {
