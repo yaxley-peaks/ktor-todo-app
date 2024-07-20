@@ -24,7 +24,7 @@ class RoutingKtTest {
         }
         client.post("/api/addItem") {
             contentType(ContentType.Application.Json)
-            setBody(TodoItem("Test", true))
+            setBody(TodoItem(99999,"Test", true))
         }.apply {
             val response = call.response
             assertEquals(HttpStatusCode.NoContent, response.status)
