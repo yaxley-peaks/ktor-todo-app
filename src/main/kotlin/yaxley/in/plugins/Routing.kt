@@ -18,13 +18,16 @@ fun Application.configureRouting() {
             post("/addItem") {
                 try {
                     val item = call.receive<TodoItem>()
+                    if(item.title.isBlank()) {
+                        call.respond(HttpStatusCode.BadRequest)
+                        return@post
+                    }
                     TodoItemRepository.items.addTodoItem(item)
                     call.respond(HttpStatusCode.NoContent)
                     return@post
                 } catch (ex: ContentTransformationException) {
                     call.respond(HttpStatusCode.BadRequest)
                 }
-
             }
         }
 

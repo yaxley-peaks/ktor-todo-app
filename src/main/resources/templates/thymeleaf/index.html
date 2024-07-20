@@ -6,17 +6,39 @@
     <title>TODO app</title>
 </head>
 <body>
-<form>
+<form id="addForm">
     <label>
         Remember what?
-        <input type="text">
+        <input name="title" type="text">
     </label>
     <button type="submit">Add item</button>
 </form>
 <h3>Items</h3>
 <ol>
-  <li th:each="item: ${items}"><input type="checkbox"><span th:text="${item.title}"></span></li>
+    <li th:each="item: ${items}"><input type="checkbox"><span th:text="${item.title}"></span></li>
 </ol>
+<!--scripts-->
+<script defer type="application/javascript">
+    document.querySelector("#addForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        let formValues = {};
+        const form = e.target;
+        const fd = new FormData(form)
+        for (const [name, value] of fd) {
+            formValues[name] = value;
+        }
+        (async () => {
+            const req = await fetch("/api/addItem", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formValues)
+            });
+            if (req.status === 204) location.reload();
+        })();
+    })
+</script>
 </body>
 </html>
 
