@@ -133,4 +133,18 @@ class RoutingKtTest {
         }
 
     }
+    @Test
+    fun testPatchApiDoneInvalidId() = testApplication {
+       application { module() }
+        client.patch("/api/done/lmao").apply {
+            assertEquals(HttpStatusCode.BadRequest, call.response.status)
+        }
+    }
+    @Test
+    fun testPatchApiDoneNonExistentItem() = testApplication {
+        application { module() }
+        client.patch("/api/done/99999").apply {
+            assertEquals(HttpStatusCode.BadRequest, call.response.status)
+        }
+    }
 }

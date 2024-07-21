@@ -63,6 +63,22 @@ fun Application.configureRouting(repository: TodoItemRepository) {
                 }
 
             }
+            patch("/pending/{id}") {
+                val id = call.parameters["id"] ?: return@patch call.respond(HttpStatusCode.BadRequest)
+                try {
+                    val itemId: Int = id.toInt()
+                    val item = repository.get(itemId)
+                    if (item != null) {
+                        repository.markAsPending(item)
+                    } else {
+                        return@patch call.respond(HttpStatusCode.BadRequest)
+                    }
+                    return@patch call.respond(HttpStatusCode.NoContent)
+                } catch (ex: NumberFormatException) {
+                    return@patch call.respond(HttpStatusCode.BadRequest)
+                }
+
+            }
         }
 
         // Static plugin. Try to access `/static/index.html`
