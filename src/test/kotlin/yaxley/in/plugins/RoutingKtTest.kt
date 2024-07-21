@@ -119,17 +119,19 @@ class RoutingKtTest {
                 json()
             }
         }
-        val doneItems: Int
+        val allItems: List<TodoItem>
         client.get("/api/items").apply {
-            doneItems = call.response.body<List<TodoItem>>().count { it.done }
+            allItems = call.response.body<List<TodoItem>>()
         }
-        client.patch("/api/done/3").apply {
-            assertEquals(call.response.status, HttpStatusCode.NoContent)
+        for(item in allItems) {
+            client.patch("/api/done/${item.id}").apply {
+                assertEquals(call.response.status, HttpStatusCode.NoContent)
+            }
         }
         client.get("/api/items").apply {
             val items = call.response.body<List<TodoItem>>()
-            val newItemCount = items.count { it.done }
-            assertEquals(doneItems + 1, newItemCount)
+            val doneItemCount = items.count { it.done }
+            assertEquals(items.count(), doneItemCount)
         }
 
     }
@@ -144,6 +146,44 @@ class RoutingKtTest {
     fun testPatchApiDoneNonExistentItem() = testApplication {
         application { module() }
         client.patch("/api/done/99999").apply {
+            assertEquals(HttpStatusCode.BadRequest, call.response.status)
+        }
+    }
+    @Test
+    fun testPatchApiPendingId() = testApplication {
+        application { module() }
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+        val allItems: List<TodoItem>
+        client.get("/api/items").apply {
+            allItems = call.response.body<List<TodoItem>>()
+        }
+        for (item in allItems) {
+            client.patch("/api/pending/${item.id}").apply {
+                assertEquals(call.response.status, HttpStatusCode.NoContent)
+            }
+        }
+        client.get("/api/items").apply {
+            val items = call.response.body<List<TodoItem>>()
+            val newItemCount = items.count { it.done }
+            assertEquals(0, newItemCount)
+        }
+
+    }
+    @Test
+    fun testPatchApiPendingInvalidId() = testApplication {
+        application { module() }
+        client.patch("/api/pending/lmao").apply {
+            assertEquals(HttpStatusCode.BadRequest, call.response.status)
+        }
+    }
+    @Test
+    fun testPatchApiPendingNonExistentItem() = testApplication {
+        application { module() }
+        client.patch("/api/pending/99999").apply {
             assertEquals(HttpStatusCode.BadRequest, call.response.status)
         }
     }

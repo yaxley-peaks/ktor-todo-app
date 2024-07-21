@@ -8,7 +8,6 @@ import io.ktor.server.http.content.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.jetbrains.exposed.sql.transactions.transaction
 import yaxley.`in`.repositories.TodoItem
 import yaxley.`in`.repositories.TodoItemRepository
 
@@ -26,9 +25,6 @@ fun Application.configureRouting(repository: TodoItemRepository) {
                         return@post
                     }
                     repository.add(item.title, item.done)
-                    transaction {
-
-                    }
                     call.respond(HttpStatusCode.Created)
                     return@post
                 } catch (ex: ContentTransformationException) {
