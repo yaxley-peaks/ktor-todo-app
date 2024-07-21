@@ -7,7 +7,7 @@ import io.ktor.server.thymeleaf.*
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 import yaxley.`in`.repositories.TodoItemRepository
 
-fun Application.configureTemplating() {
+fun Application.configureTemplating(itemRepository: TodoItemRepository) {
     install(Thymeleaf) {
         setTemplateResolver(ClassLoaderTemplateResolver().apply {
             prefix = "templates/thymeleaf/"
@@ -17,7 +17,7 @@ fun Application.configureTemplating() {
     }
     routing {
         get("/") {
-            call.respond(ThymeleafContent("index", mapOf("items" to TodoItemRepository.items.items)))
+            call.respond(ThymeleafContent("index", mapOf("items" to itemRepository.allItems())))
         }
     }
 }

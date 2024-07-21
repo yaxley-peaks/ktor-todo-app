@@ -8,10 +8,11 @@ import io.ktor.server.http.content.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.jetbrains.exposed.sql.transactions.transaction
 import yaxley.`in`.repositories.TodoItem
 import yaxley.`in`.repositories.TodoItemRepository
 
-fun Application.configureRouting() {
+fun Application.configureRouting(repository: TodoItemRepository) {
     routing {
         route("/api") {
             post("/addItem") {
@@ -21,7 +22,10 @@ fun Application.configureRouting() {
                         call.respond(HttpStatusCode.BadRequest)
                         return@post
                     }
-                    TodoItemRepository.items.addTodoItem(item.title, item.done)
+                    repository.add(item.title, item.done)
+                    transaction {
+
+                    }
                     call.respond(HttpStatusCode.NoContent)
                     return@post
                 } catch (ex: ContentTransformationException) {
