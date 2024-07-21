@@ -1,5 +1,6 @@
 package yaxley.`in`.plugins
 
+import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -64,6 +65,49 @@ class RoutingKtTest {
         }.apply {
             val response = call.response
             assertEquals(HttpStatusCode.BadRequest, response.status)
+        }
+    }
+
+    @Test
+    fun testGetApiItems() = testApplication {
+        application { module() }
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+
+        }
+        client.get("/api/items") {}.apply {
+            val response = call.response
+            // Do not let this throw
+            call.response.body<List<TodoItem>>()
+            assertEquals(HttpStatusCode.OK, response.status)
+        }
+    }
+
+    @Test
+    fun testDeleteApiRemoveItemId() = testApplication {
+        application { module() }
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+
+        }
+        val itemCount: Int
+        client.get("/api/items") {}.apply {
+            // Do not let this throw
+            itemCount = call.response.body<List<TodoItem>>().count()
+        }
+        client.post("/api/addItem") {
+            contentType(ContentType.Application.Json)
+            setBody(TodoItem(99999, "Testing", true))
+        }.apply { }
+        client.delete("/api/removeItem/1").apply {
+            assertEquals(call.response.status, HttpStatusCode.NoContent)
+        }
+        client.get("/api/items") {}.apply {
+            assertEquals(itemCount, call.response.body<List<TodoItem>>().count())
         }
     }
 }

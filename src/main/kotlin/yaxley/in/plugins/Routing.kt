@@ -15,6 +15,9 @@ import yaxley.`in`.repositories.TodoItemRepository
 fun Application.configureRouting(repository: TodoItemRepository) {
     routing {
         route("/api") {
+            get("/items") {
+                call.respond(repository.allItems())
+            }
             post("/addItem") {
                 try {
                     val item = call.receive<TodoItem>()
@@ -30,6 +33,18 @@ fun Application.configureRouting(repository: TodoItemRepository) {
                     return@post
                 } catch (ex: ContentTransformationException) {
                     call.respond(HttpStatusCode.BadRequest)
+                }
+            }
+            delete("/removeItem/{id}") {
+                val id = call.parameters["id"] ?: return@delete call.respond(HttpStatusCode.BadRequest)
+                try {
+                    val itemId: Int = id.toInt()
+                    repository.remove(itemId)
+                    return@delete call.respond(HttpStatusCode.NoContent)
+                } catch (ex: NumberFormatException) {
+                    return@delete call.respond(HttpStatusCode.BadRequest)
+                } catch (ex: Throwable) {
+                    return@delete call.respond(HttpStatusCode.InternalServerError)
                 }
             }
         }
