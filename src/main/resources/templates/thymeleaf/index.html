@@ -20,8 +20,9 @@
 <h3>Items</h3>
 <ol>
     <li th:data="${item.id}" th:each="item: ${items}">
-        <input th:checked="${item.done}" type="checkbox">
+        <input th:checked="${item.done}" type="checkbox" disabled>
         <span th:text="${item.title}"></span>
+        <button class="mark-done" th:data="${item.id}">Mark done</button>
     </li>
 </ol>
 <!--scripts-->
@@ -44,9 +45,23 @@
                 },
                 body: JSON.stringify(formValues)
             });
-            if (req.status === 204) location.reload();
+            if (req.status === 201) location.reload();
         })();
     })
+    const toggleButtons = document.querySelectorAll(".mark-done");
+    for(const button of toggleButtons) {
+       button.addEventListener("click", e => {
+           e.preventDefault();
+           const id = e.target.getAttribute("data");
+           (async () => {
+               const req = await fetch(`/api/done/${id}`, {
+                   method: "PATCH",
+               });
+               if (req.status === 204) location.reload();
+           })();
+
+       });
+    }
 </script>
 </body>
 </html>
