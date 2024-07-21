@@ -17,7 +17,7 @@ fun Application.configureRouting() {
             post("/addItem") {
                 try {
                     val item = call.receive<TodoItem>()
-                    if(item.title.isBlank()) {
+                    if (item.title.isBlank()) {
                         call.respond(HttpStatusCode.BadRequest)
                         return@post
                     }

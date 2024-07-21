@@ -40,10 +40,10 @@ data class TodoItemRepository(val items: MutableList<TodoItem>) {
         )
     }
 
-   private fun addTodoItem(item: TodoItem): TodoItem {
-       if (items.any {it.id == item.id}) {
-           throw IllegalStateException("Duplicate task id (${item.id}) not allowed")
-       }
+    private fun addTodoItem(item: TodoItem): TodoItem {
+        if (items.any { it.id == item.id }) {
+            throw IllegalStateException("Duplicate task id (${item.id}) not allowed")
+        }
         items.add(item)
         return item
     }

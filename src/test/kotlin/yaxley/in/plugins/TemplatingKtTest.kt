@@ -1,6 +1,5 @@
 package yaxley.`in`.plugins
 
-import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.testing.*

@@ -1,6 +1,6 @@
 <!DOCTYPE html >
 <!--suppress HtmlFormInputWithoutLabel -->
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>TODO app</title>
@@ -13,14 +13,14 @@
     </label>
     <label>
         Done?
-        <input type="checkbox" name="done">
+        <input name="done" type="checkbox">
     </label>
     <button type="submit">Add item</button>
 </form>
 <h3>Items</h3>
 <ol>
-    <li th:each="item: ${items}" th:data="${item.id}">
-        <input type="checkbox" th:checked="${item.done}">
+    <li th:data="${item.id}" th:each="item: ${items}">
+        <input th:checked="${item.done}" type="checkbox">
         <span th:text="${item.title}"></span>
     </li>
 </ol>
@@ -32,8 +32,8 @@
         const form = e.target;
         const fd = new FormData(form)
         for (let [name, value] of fd) {
-            if(value === "on") value = true
-            if(value === "off") value = false
+            if (value === "on") value = true
+            if (value === "off") value = false
             formValues[name] = value;
         }
         (async () => {
