@@ -28,7 +28,7 @@ class RoutingKtTest {
             setBody(TodoItem(99999, "Test", true))
         }.apply {
             val response = call.response
-            assertEquals(HttpStatusCode.NoContent, response.status)
+            assertEquals(HttpStatusCode.Created, response.status)
         }
     }
 
@@ -109,5 +109,28 @@ class RoutingKtTest {
         client.get("/api/items") {}.apply {
             assertEquals(itemCount, call.response.body<List<TodoItem>>().count())
         }
+    }
+
+    @Test
+    fun testPatchApiDoneId() = testApplication {
+        application { module() }
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+        val doneItems: Int
+        client.get("/api/items").apply {
+            doneItems = call.response.body<List<TodoItem>>().count { it.done }
+        }
+        client.patch("/api/done/3").apply {
+            assertEquals(call.response.status, HttpStatusCode.NoContent)
+        }
+        client.get("/api/items").apply {
+            val items = call.response.body<List<TodoItem>>()
+            val newItemCount = items.count { it.done }
+            assertEquals(doneItems + 1, newItemCount)
+        }
+
     }
 }

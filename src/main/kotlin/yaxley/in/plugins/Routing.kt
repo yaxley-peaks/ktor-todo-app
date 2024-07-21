@@ -29,7 +29,7 @@ fun Application.configureRouting(repository: TodoItemRepository) {
                     transaction {
 
                     }
-                    call.respond(HttpStatusCode.NoContent)
+                    call.respond(HttpStatusCode.Created)
                     return@post
                 } catch (ex: ContentTransformationException) {
                     call.respond(HttpStatusCode.BadRequest)
@@ -46,6 +46,22 @@ fun Application.configureRouting(repository: TodoItemRepository) {
                 } catch (ex: Throwable) {
                     return@delete call.respond(HttpStatusCode.InternalServerError)
                 }
+            }
+            patch("/done/{id}") {
+                val id = call.parameters["id"] ?: return@patch call.respond(HttpStatusCode.BadRequest)
+                try {
+                    val itemId: Int = id.toInt()
+                    val item = repository.get(itemId)
+                    if (item != null) {
+                        repository.markAsDone(item)
+                    } else {
+                        return@patch call.respond(HttpStatusCode.BadRequest)
+                    }
+                    return@patch call.respond(HttpStatusCode.NoContent)
+                } catch (ex: NumberFormatException) {
+                    return@patch call.respond(HttpStatusCode.BadRequest)
+                }
+
             }
         }
 
