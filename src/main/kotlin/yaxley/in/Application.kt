@@ -4,7 +4,7 @@ import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import yaxley.`in`.plugins.*
-import yaxley.`in`.repositories.FakeTodoItemRepository
+import yaxley.`in`.repositories.MySqlTodoItemRepository
 import yaxley.`in`.repositories.TodoItemRepository
 
 fun main() {
@@ -13,7 +13,7 @@ fun main() {
 }
 
 fun Application.module() {
-    val itemRepository : TodoItemRepository = FakeTodoItemRepository()
+    val itemRepository : TodoItemRepository = MySqlTodoItemRepository()
     configureDatabase()
     configureTemplating(itemRepository)
     configureSerialization()
